@@ -67,3 +67,24 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Arduino build artifacts
+*.elf
+*.bin
+*.hex
+*.map
+
+# Arduino IDE
+.vscode/
+build/
+*.cfg
+
+# Credentials - NE JAMAIS COMMITER
+.env
+secrets.h
+
+# Docker
+.env
+
+# macOS
+.DS_Store
