@@ -83,6 +83,7 @@ build/
 # Credentials - NE JAMAIS COMMITER
 .env
 secrets.h
+secret.h
 
 # Docker
 .env
