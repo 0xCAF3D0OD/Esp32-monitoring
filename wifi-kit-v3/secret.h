@@ -1,0 +1,2 @@
+#define WIFI_SSID "WIFI DINO"
+#define WIFI_PASSWORD "g5K6m6G5mtaf"

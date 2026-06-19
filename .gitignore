@@ -76,6 +76,7 @@ Testing/
 
 # Arduino IDE
 .vscode/
+.idea/
 build/
 *.cfg
 
