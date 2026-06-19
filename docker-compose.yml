@@ -1,4 +1,21 @@
 services:
+  # Exporter Prometheus officiel pour Meshtastic.
+  # Décode les MeshPacket reçus via MQTT et les expose au format Prometheus sur :9464.
+  # https://github.com/hacktegic/meshtastic-prometheus-exporter
+  meshtastic-exporter:
+    image: ghcr.io/hacktegic/meshtastic-prometheus-exporter:2.7
+    container_name: meshtastic-exporter
+    restart: unless-stopped
+    environment:
+      - MESHTASTIC_INTERFACE=MQTT
+      - MQTT_ADDRESS=mqtt.meshtastic.org
+      - MQTT_PORT=1883
+      - MQTT_USE_TLS=0
+      - MQTT_KEEPALIVE=15
+      - MQTT_USERNAME=meshdev
+      - MQTT_PASSWORD=large4cats
+      - MQTT_TOPIC=msh/EU_868/#
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -10,6 +27,7 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus
       - prom_data:/prometheus
+
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -20,6 +38,8 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=${GF_ADMIN_PASSWORD}
     volumes:
-      - ./grafana:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+
 volumes:
   prom_data:

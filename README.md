@@ -70,6 +70,28 @@ scrape_configs:
 
 In Grafana: `Connections > Data sources > Add Prometheus`, URL `http://prometheus:9090`, check **Default**.
 
+## Meshtastic monitoring (standardized method)
+
+The Meshtastic side uses the official Prometheus exporter
+[`hacktegic/meshtastic-prometheus-exporter`](https://github.com/hacktegic/meshtastic-prometheus-exporter),
+**not** a generic MQTT exporter. It subscribes to the public MQTT broker, decodes the
+Meshtastic `MeshPacket` protobuf, and exposes proper Prometheus metrics on `:9464`.
+
+```
+mqtt.meshtastic.org --MQTT--> meshtastic-exporter:/metrics(:9464) --> Prometheus --> Grafana
+```
+
+- Service `meshtastic-exporter` in `docker-compose.yml` (MQTT mode, region topic `msh/EU_868/#`).
+- Public broker credentials are the documented defaults: `meshdev` / `large4cats`, plain TCP on `1883`.
+- Prometheus scrapes `meshtastic-exporter:9464` (job `meshtastic`).
+- Six dashboards are auto-provisioned from `grafana/dashboards/` (telemetry, packets, neighbor-info — per-node and network-wide).
+
+To see your **own** node's data, enable the MQTT module on the node (uplink) pointing at the same
+broker/region. The public broker also carries other operators' traffic in your region, so dashboards
+will show network-wide activity regardless.
+
+Change `MQTT_TOPIC` in `docker-compose.yml` if your region differs (e.g. `msh/US/#`).
+
 ## OLED / LED pinout
 
 | Pin | GPIO |
